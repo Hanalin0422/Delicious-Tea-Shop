@@ -1,38 +1,71 @@
+
+@font-face {
+  font-family: "Nanum-Gothic";
+  src: url('https://fonts.googleapis.com/css?family=Nanum+Gothic+Coding:400,700');
+}
 .App {
   text-align: center;
+  font-size: 17px;
+  font-family: "Nanum-Gothic";
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.inner{
+  position: relative;
+}
+.inner .bg-body-tertiary {
+  height: 100px;
+}
+.inner #title-name{
+  font-size: 30px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.inner .bg-body-tertiary .me-auto{
+  padding: 0 30px 0;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.inner .bg-body-tertiary .list{
+  padding-left: 30px;
+  color: #333;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+}
+.inner .bg-body-tertiary .list:after{
+  background: none repeat scroll 0 0 transparent;
+  bottom: 0;
+  content: "";
+  display: block;
+  height: 2px;
+  left: 50%;
+  position: absolute;
+  background: #ffb000;
+  transition: width 0.3s ease 0s, left 0.3s ease 0s;
+  width: 0;
+}
+.inner .bg-body-tertiary .list:hover:after{
+  width: 100%; 
+  left: 0; 
+}
+.inner .material-symbols-outlined{
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 10px 20px 0 5px;
+  cursor: pointer;
+}
+
+.main-bg{
+  height: 500px;
+  background-image: url(./img/main-bg.jpg);
+  background-size: cover;
+  background-position: center;
+}
+
+.inner .products-list{
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  display: block;
+  height: 500px;
+  padding-top: 80px;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.inner .products-list .main-bg-ex{
+  margin: 20px;
 }
