@@ -1,90 +1,41 @@
 import './App.css';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import earlGrey from './img/earlGrey.jpg';
-import luebose from './img/luebose.jpg';
-import camomile from './img/camomile.jpg';
-import { useState } from 'react';
-import productData from './data';
+// 외부라이브러리 사용법
+import {Routes, Route, Link, useNavigate, Outlet} from 'react-router-dom';
+import Main from './pages/main';
+import Detail from './pages/detail';
+import About from './pages/about';
+import Event from './pages/event';
+import Event_ONE from './pages/event-one';
+import Event_TWO from './pages/event-two';
 
 // public폴더는 압축이 안되니까 public에 사진을 넣고 바로 가져다 사용할 수도 있는데
 // public 폴더 이미지 쓰는 권장방식이 <img src={process.env.PUBLIC_URL + '/logo192.png'}
 
 function App() {
-
-  let [tea, setTea] = useState(productData);
-  let teaImg = [earlGrey, luebose, camomile];
-
   return (
     <div className="App">
-      <header>
-        <div className="inner">
-          <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
-            <Container>
-              <Navbar.Brand href="./App.js"><strong id="title-name">맛차</strong></Navbar.Brand>
-              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-              <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav className="me-auto">
-                  <Nav.Link href="#features" className='list'>Home</Nav.Link>
-                  <Nav.Link href="#pricing" className='list'>이번주 신상</Nav.Link>
-                  <NavDropdown title="상품 둘러보기" id="collapsible-nav-dropdown" className='list'>
-                    {
-                    tea.map(function(num, i){
-                      return(
-                        <NavDropdown.Item href="#action/3.1">{tea[i].title}</NavDropdown.Item>
-                      )
-                    })
-                    }
-                  </NavDropdown>
-                </Nav>
-                <Nav>
-                  <Nav.Link href="#deets" className='list'>장바구니</Nav.Link>
-                  <div className="material-symbols-outlined">shopping_basket</div>
-                  <Nav.Link eventKey={2} href="#memes" className='list'>마이페이지</Nav.Link>
-                </Nav>
-              </Navbar.Collapse>
-            </Container>
-          </Navbar>
-        </div>
-      </header>
+      {/* 라우터 사용하는 법 */}
+      <Routes>
+        <Route path='/' element={<Main/>}/>
+        <Route path='/detail/:id' element={<Detail/>}/>
+        <Route path='/about' element={<About/>}>
+          {/* 이거는 /about/member랑 똑같음, 이걸 nested router라고 함. 
+          또한 about이랑 member를 한꺼번에 보여줄수도 있음 
+          넣고 싶은 공간에 <Outlet></Outlet>을 작성해주면 됨.*/}
+          <Route path='member' element={<About/>}/>  
+          <Route path='location' element={<About/>}/>
+        </Route>
+        <Route path='/event' element={<Event/>}>
+          <Route path='one' element={<Event_ONE/>}/>
+          <Route path='two' element={<Event_TWO/>}/>
+        </Route>
 
-      <div className="inner">
-        <div className="main-bg"></div>
-        <div className="products-list">
-          <Container>
-            <Row>
-              {
-                tea.map(function(num, i){
-                  return (
-                    <ProdModal tea={tea} teaImg={teaImg} num={num}/>
-                  )
-                })
-              }
-            </Row>
-          </Container>
-        </div>
-      </div>
 
+
+        <Route path='*' element={<div>404 없는 페이지 입니다!</div>}/>
+        </Routes>
     </div>
   );
-
-}
-
- // 상품 설명을 담는 모달
-function ProdModal(props){
-  let i = props.num.id;
-  return(
-    <Col>
-      <img src={props.teaImg[i]} />
-      <h4 className="main-bg-es">{props.tea[i].title}</h4>
-      <p>{props.tea[i].price}</p>
-      <p>{props.tea[i].content}</p>
-    </Col>
-  )
 }
 
 
