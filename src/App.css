@@ -41,13 +41,17 @@
   width: 0;
 }
 .inner .bg-body-tertiary .list:hover:after{
-  width: 100%; 
-  left: 0; 
+  width: 70%; 
+  left: 30px; 
 }
 .inner .material-symbols-outlined{
   display: flex;
   padding: 10px 20px 0 5px;
   cursor: pointer;
+}
+.inner .material-symbols-outlined:hover{
+  transition: all 0.15s;
+  transform: translateY(-40%) rotate(30deg);
 }
 
 .main-bg{

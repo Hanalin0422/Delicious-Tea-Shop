@@ -21,5 +21,14 @@
     padding-bottom: 10px;
 }
 .exp{
-    padding-bottom: 30px;
+    margin-bottom: 30px;
+}
+#quantity{
+    display: block;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+#quantity-input{
+    width: 70px;
 }
