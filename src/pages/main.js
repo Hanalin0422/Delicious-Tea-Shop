@@ -12,11 +12,14 @@ import { useState } from 'react';
 import productData from '../data';
 import {Routes, Route, Link, useNavigate, Outlet} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import axios from 'axios';
 
 function Main(){
     let [tea, setTea] = useState(productData);
-    let teaImg = [earlGrey, luebose, camomile];
+    let teaImg = [earlGrey, luebose, camomile,earlGrey, luebose, camomile,earlGrey, luebose, camomile];
     let navigate = useNavigate();
+    // 사용자가 버튼 클릭한 횟수
+    let [buttonClick, setButtonClick] = useState(2);
 
 
     return (
@@ -66,6 +69,30 @@ function Main(){
                   }
                 </Row>
               </Container>
+              <div className='add'>
+                  {
+                    buttonClick < 4 ?
+                    <Button onClick={()=>{
+                      setButtonClick(buttonClick+1);
+                      console.log(buttonClick);
+
+                        // npm install axios를 해서 이제 서버랑 통신 할거임.
+                        //어떤 데이터를 요청할지 서버 개발자에게 url을 물어봐서 집어넣기.
+                        axios.get('https://codingapple1.github.io/shop/data'+buttonClick+'.json')
+                        .then((data)=>{
+                          let copy = [...tea, ...data.data];
+                          // let ret = copy.concat(data.data); 위에가 편법
+                          setTea(copy);
+                          console.log(copy);
+                        })
+                        .catch(()=>{
+                          // ajax요청 실패할시 에러 처리는 여기다가
+                          console.log('예외 처리 해주기 / 데이터 못 가져옴!');
+                        })
+                    }}>더보기</Button> : null
+                  }
+
+              </div>
             </div>
           </div>
     
