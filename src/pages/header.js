@@ -5,9 +5,11 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useState } from 'react';
 import productData from '../data';
+import { useNavigate } from 'react-router-dom';
 
 function Header(){
     let [tea, setTea] = useState(productData);
+    let navigate = useNavigate();
     return(
         <div className="Header">
             <header>
@@ -31,7 +33,7 @@ function Header(){
                         </NavDropdown>
                         </Nav>
                         <Nav>
-                        <Nav.Link href="#deets" className='list'>장바구니</Nav.Link>
+                        <Nav.Link onClick={()=> navigate('/cart')} className='list'>장바구니</Nav.Link>
                         <div className="material-symbols-outlined">shopping_basket</div>
                         <Nav.Link eventKey={2} href="#memes" className='list'>마이페이지</Nav.Link>
                         </Nav>

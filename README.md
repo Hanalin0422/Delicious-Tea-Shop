@@ -136,4 +136,199 @@ fetch('url')
     .then(결과=> 결과.json())
     .then(data =>{})
 ```
-와 같이 써줘야 함. 즉, JSON을 내가 array/object로 변환하는 과정을 직접 작성해야함. 하지만 axios를 사용하면 알아서 그 과정을 해줌.
+와 같이 써줘야 함. 즉, JSON을 내가 array/object로 변환하는 과정을 직접 작성해야함. 하지만 axios를 사용하면 알아서 그 과정을 해줌.  
+
+#### 전환 애니메이션 만드는 방법
+전환 애니메이션은 css 파일 가서 class명 하나 만들어서 이 class 명을 부착하면 애니메이션이 동작하게 하면 됨.  
+즉
+1. css 파일로 가서 애니메이션 동작 전 className 만들기
+2. 애니메이션 동작 후 className 만들기
+3. 애니메이션 동작 후 className 만들기
+4. className에 transition 속성 추가  
+
+> 페이지를 자연스럽게 전환하기 위해서  
+npm install framer-motion  
+사용할 거임.
+
+일단 이거 깔고
+App.js에다
+```
+    <AnimatePresence>
+        <Routes>
+          <Route path='/' element={<Main/>}/>
+          <Route path='/detail/:id' element={<Detail/>}/>
+          <Route path='/about' element={<About/>}>
+            {/* 이거는 /about/member랑 똑같음, 이걸 nested router라고 함. 
+            또한 about이랑 member를 한꺼번에 보여줄수도 있음 
+            넣고 싶은 공간에 <Outlet></Outlet>을 작성해주면 됨.*/}
+            <Route path='member' element={<About/>}/>  
+            <Route path='location' element={<About/>}/>
+          </Route>
+          <Route path='/event' element={<Event/>}>
+            <Route path='one' element={<Event_ONE/>}/>
+            <Route path='two' element={<Event_TWO/>}/>
+          </Route>
+          <Route path='*' element={<div>404 없는 페이지 입니다!</div>}/>
+        </Routes>
+    </AnimatePresence>
+```
+라우터를 AnimatePresence태그로 다 감싸기.  
+그리고 모든 페이지에 적용할 것이기 때문에 컴포넌트를 다 만들어 줄거임.  
+wrapper라는 컴포넌트를 만들건데 그거는 파일을 하나 생성해서
+```
+import React from "react";
+import { motion } from 'framer-motion';
+import { pageEffect } from "./CSS/animation";
+
+const Wrapper = ({children}) =>{
+    return(
+        <motion.div
+            initial= "initial"
+            animate= "in"
+            exit="out"
+            transition={{duration : 0.3}}
+            variants={pageEffect}
+            >
+            {children}
+            </motion.div>
+    )
+}
+export default Wrapper;
+```
+요렇게 작성해주고 이때 children을 넣어줘야 제대로 동작함.  
+저거 안넣으면 동작을 안함.  
+그다음 내가 동작 시키고 싶은 애니메이션을 animation.js에 입력을 할건데 내 파일은 그게 src/CSS/animation.js에 있음.
+```
+export const pageEffect = {
+    initial:{
+        opacity : 0
+    },
+    in : {
+        opacity : 1
+    },
+    out : {
+        opacity : 0
+    }
+};
+```
+대충 이런 식으로 해주면 됨.  
+이제 마지막으로 페이지에 적용시켜주고 싶으면 각 페이지 함수의 return을 
+Wrapper태그로 감싸주면 됨.
+```
+function Main(){
+    (... 변수 선언 자리)
+
+    return (
+        <Wrapper>
+            <div className="Main">
+                (해당 내용 ...)
+            </div>
+        </Wrapper>
+    )
+}
+```
+이런 식으로 내가 애니메이션 동작을 원하는 페이지에 적용해주면 잘 적용되는 것을 볼 수 있음.
+
+### Single Page Application의 단점
+#### : 컴포넌트간 state 공유가 어려움
+이걸 정말 잘 느낀 것은 props를 어떻게 받아야 할지 몰라 난감한 경우가 지금도 발생.  
+근데 부모 자식 관계면 props전송이 가능하니까 부모 자식 관계를 만들면 되는데 그게 귀찮음.  
+아무튼 만약 App > Datail > Tab 과 같이 부모 자식 관계가 형성이 되었는데 App의 state 변수를 Tab에 전송하고 싶을 경우 한번에 되지 않아서 Detail로 보내고 Tab에서 받아와야 함.  
+
+근데 이게 9개 중첩되어 있으면 어쩔거임?  
+=> props가 싫으면 사용하지 않게 도와줄 2가지 방법이 있음.  
+1. Context API (리액트 기본문법)   
+: 근데 얘는 성능 이슈와 컴포넌트 재활용이 안된다는 단점으로 인해 잘 사용 안함.  
+얘 특징이 state변경시 쓸데없는 것까지 재런더링함. 매우 비효율적으로 성능 이슈 발생.  
+또한 다른 페이지에서 재사용하려고 하면 컴포넌트가 없다고 나올 수도 있음.
+2. Redux 등 외부라이브러리  
+: redux를 사용하면 컴포넌트들이 props없이 state 공유 가능.  
+이걸 하면 js를 하나 생성해서 state를 다 몰아넣고 그걸 빼서 쓰는 거임.   
+그래서 사이즈가 크면 대부분 redux를 요구함.  
+리액트 18버전 이상이여야 가능
+```
+npm install @reduxjs/toolkit react-redux
+```
+설치 했으면 state를 보관하는 js 파일을 하나 생성해줘야 하는데 store.js라고 파일명 지정.  
+(정해져 있는 것 같음, 함수 이름이 store임)  
+
+아무튼 그리고 난 후 파일에 일단
+```
+import { configureStore } from "@reduxjs/toolkit";
+
+export default configureStore({
+    reducer:{
+        
+    }
+})
+```
+이거 그대로 입력.
+
+그런 다음 index.js로 가서
+```
+import store from './store';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+  >> 이 부분이 추가 된거임!!!
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>
+);
+```
+를 쓰면 셋팅 끝.  
+
+
+#### Redux의 state 변경하는 법
+---
+state를 수정해주는 함수를 만들고 원할 때 그 함수를 실행해달라고 store.js에 요청하면 됨.  
+1. state 수정해주는 함수 미리 만들기 (reducers:{함수(state를 변경하는 함수)})  
+```
+reducers : {
+    changeName(state){
+        return 'john' + state
+    }
+}
+```
+이런 식으로 추가해주면 되는데 이때 파라미터로 들어가는 state는 현재 해당하는 state의 값을 의미함.
+
+2. 함수를 만들었으면 다른 곳에 쓸 수 있게 export해야함.  
+export는 밖으로 빼야함.  
+```
+export let {(내가 만든 변경할 수 있는 함수1), (내가 만든 변경할 수 있는 함수2)...} = (stae이름).actions
+```
+3. 만든 함수를 import해서 사용할건데
+4. let dispatch = useDispatch()라는 것을 선언해서 store.js로 요청을 보내는 함수를 선언해줘야 함.
+5. 그다음
+```
+dispatch((state 변경해주는 함수 이름()))
+```
+이렇게 사용하면 됨.  
+
+- 그러면 state가 array/object이면 어떻게 변경할 건데?  
+=> 약간 특이함.  
+```
+changeName(state){
+    state.name = 'park' 과 같이 array/object의 경우 직접 수정해도 state 변경됨.
+}
+```
+또한 state 변경함수에 파라미터 뚫는 법은  
+```
+increase(state, a){
+    state.age += a.payload;
+}
+```
+이런 함수가 있을 경우
+```
+increase(10)
+```
+이렇게 적으면 한번에 10을 더해주는 함수로 교체할 수 있게 됨.  
+여기서 payload를 쓰는 이유는 이렇게 해야 정확하게 숫자를 더해주기 때문에 사용하는 거임.
+```
+increate(state, action){}
+```
+이라고 작명을 하는 경우가 있는데 state변경함수를 action이라고 함.

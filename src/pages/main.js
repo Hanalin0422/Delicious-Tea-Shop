@@ -8,11 +8,14 @@ import Col from 'react-bootstrap/Col';
 import earlGrey from '../img/earlGrey.jpg'
 import luebose from '../img/luebose.jpg';
 import camomile from '../img/camomile.jpg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import productData from '../data';
 import {Routes, Route, Link, useNavigate, Outlet} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
+import loadingImg from '../img/loading.gif';
+import Wrapper from '../wrapper';
+import Header from './header';
 
 function Main(){
     let [tea, setTea] = useState(productData);
@@ -21,82 +24,71 @@ function Main(){
     // 사용자가 버튼 클릭한 횟수
     let [buttonClick, setButtonClick] = useState(2);
 
+    let [loading, setLoading] = useState(true);
+
+    function loadingView(loading){
+      if(loading){
+        return(
+          <div className="div">
+            <img src={loadingImg} alt="로딩 이미지 gif" />
+          </div>
+        )
+      }
+    }
 
     return (
-        <div className="Main">
-          <header>
+      <Wrapper>
+          <div className="Main">
+            <Header />
+      
             <div className="inner">
-              <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
+              <div className="main-bg"></div>
+              <div className="products-list">
                 <Container>
-                  <Navbar.Brand href="/"><strong id="title-name">맛차</strong></Navbar.Brand>
-                  <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                  <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="me-auto">
-                      <Nav.Link onClick={()=>{navigate('/')}} className='list'>Home</Nav.Link>
-                      <Nav.Link href="#pricing" className='list'>이번주 신상</Nav.Link>
-                      <NavDropdown title="상품 둘러보기" id="collapsible-nav-dropdown" className='list'>
-                        {
-                        tea.map(function(num, i){
-                          return(
-                            <NavDropdown.Item href="#action/3.1">{tea[i].title}</NavDropdown.Item>
-                          )
-                        })
-                        }
-                      </NavDropdown>
-                    </Nav>
-                    <Nav>
-                      <Nav.Link href="#deets" className='list'>장바구니</Nav.Link>
-                      <div className="material-symbols-outlined">shopping_basket</div>
-                      <Nav.Link eventKey={2} href="#memes" className='list'>마이페이지</Nav.Link>
-                    </Nav>
-                  </Navbar.Collapse>
+                  <Row>
+                    {
+                      tea.map(function(num, i){
+                        return (
+                          <ProdModal tea={tea} teaImg={teaImg} num={num}/>
+                        )
+                      })
+                    }
+                  </Row>
                 </Container>
-              </Navbar>
-            </div>
-          </header>
-    
-          <div className="inner">
-            <div className="main-bg"></div>
-            <div className="products-list">
-              <Container>
-                <Row>
-                  {
-                    tea.map(function(num, i){
-                      return (
-                        <ProdModal tea={tea} teaImg={teaImg} num={num}/>
-                      )
-                    })
-                  }
-                </Row>
-              </Container>
-              <div className='add'>
-                  {
-                    buttonClick < 4 ?
-                    <Button onClick={()=>{
-                      setButtonClick(buttonClick+1);
-                      console.log(buttonClick);
 
-                        // npm install axios를 해서 이제 서버랑 통신 할거임.
-                        //어떤 데이터를 요청할지 서버 개발자에게 url을 물어봐서 집어넣기.
-                        axios.get('https://codingapple1.github.io/shop/data'+buttonClick+'.json')
-                        .then((data)=>{
-                          let copy = [...tea, ...data.data];
-                          // let ret = copy.concat(data.data); 위에가 편법
-                          setTea(copy);
-                          console.log(copy);
-                        })
-                        .catch(()=>{
-                          // ajax요청 실패할시 에러 처리는 여기다가
-                          console.log('예외 처리 해주기 / 데이터 못 가져옴!');
-                        })
-                    }}>더보기</Button> : null
-                  }
+                <div className='add'>
+                    {
+                      buttonClick < 4 ?
+                      <Button onClick={()=>{
+                        setLoading(true);
+                        loadingView(loading);
 
+                        setButtonClick(buttonClick+1);
+                        console.log(buttonClick);
+
+                          // npm install axios를 해서 이제 서버랑 통신 할거임.
+                          //어떤 데이터를 요청할지 서버 개발자에게 url을 물어봐서 집어넣기.
+                          axios.get('https://codingapple1.github.io/shop/data'+buttonClick+'.json')
+                          .then((data)=>{
+                            let copy = [...tea, ...data.data];
+                            // let ret = copy.concat(data.data); 위에가 편법
+                            setTea(copy);
+                            console.log(copy);
+                            setLoading(false);
+                          })
+                          .catch(()=>{
+                            // ajax요청 실패할시 에러 처리는 여기다가
+                            console.log('예외 처리 해주기 / 데이터 못 가져옴!');
+                            setLoading(false);
+                          })
+                      }}>더보기</Button> : null
+                    }
+                    
+                </div>
               </div>
             </div>
           </div>
-    
-        </div>
+        </Wrapper>
       );
     
         // 상품 설명을 담는 모달

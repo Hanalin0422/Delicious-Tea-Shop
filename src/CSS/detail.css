@@ -32,3 +32,20 @@
 #quantity-input{
     width: 70px;
 }
+.tab{
+    margin: 0 10% 0;
+}
+.explain{
+    height: 500px;
+    margin-top: 40px;
+}
+
+/* 애니메이션 만들거임! */
+.start{
+    opacity: 0;
+}
+.end{
+    opacity: 1;
+    /* opacity가 변경될때 0.5초 걸려서 동작하게 해주세요. */
+    transition: opacity 1s;
+}
