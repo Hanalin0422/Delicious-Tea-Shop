@@ -15,6 +15,7 @@ let cart = createSlice({
     initialState : cartData,
     reducers :{
         addCount(state, action){
+            // 여기서 e라는 파라미터는 해당 배열에 대한 하나하나의 데이터를 의미함. 여기서는 객체
             let num = state.findIndex((e)=> e.id == action.payload);
             state[num].count++;
         },
@@ -23,10 +24,13 @@ let cart = createSlice({
             if(state[num].count > 0){
                 state[num].count--;
             }
+        },
+        plusProduct(state, action){
+            state.push(action.payload);
         }
     }
 })
-export let {addCount, minusCount} = cart.actions;
+export let {addCount, minusCount, plusProduct} = cart.actions;
 
 
 // state를 만들었으면 이제 이 밑에 등록해야됨.

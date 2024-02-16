@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import Alert from 'react-bootstrap/Alert';
 import Nav from 'react-bootstrap/Nav';
 import Wrapper from '../wrapper';
+import { useDispatch } from 'react-redux';
+import { plusProduct } from '../store';
 
 function Detail(){
 
@@ -28,6 +30,7 @@ function Detail(){
     let [alertt, setAlert] = useState(true);
     let [num, setNum] = useState('');
     let [tab, setTab] = useState(0);
+    let dispatch = useDispatch();
 
     function numChange(e){
         setNum(e.target.value);
@@ -80,7 +83,14 @@ function Detail(){
                     <div id="quantity">
                         <input id="quantity-input" type='text'onChange={(e)=> numChange(e)}/> 개 구매하기!
                     </div>
-                    <Button variant="danger">구매하기</Button>{' '}
+                    <Button variant="danger" onClick={()=>{
+                        dispatch(plusProduct({
+                            id : findProduct.id,
+                            name : findProduct.title,
+                            count : 1
+                        }));
+                        navigate('/cart');
+                    }}>구매하기</Button>{' '}
                     <Button variant="info" onClick={()=>{navigate(-1)}}>돌아가기</Button>{' '}
                 </div>
                 
@@ -99,7 +109,7 @@ function Detail(){
                         </Nav.Item>
                     </Nav>
                     <div className='explain'>
-                        <TabContent tab={tab} tea={tea}/>
+                        <TabContent tab={tab} tea={tea} findProduct={findProduct}/>
                     </div>
                 </div>
 
@@ -109,7 +119,7 @@ function Detail(){
 }
 
 // props.어쩌구가 귀찮으면 {tab}을 그냥 바로 넣으면 그대로 가져다 사용할 수 있음
-function TabContent({tab, tea}){
+function TabContent({tab, findProduct}){
     // switch(props.tab){
     //     case 0:
     //         return <div>내용0</div>
@@ -137,7 +147,7 @@ function TabContent({tab, tea}){
     }, [tab])
     
     return <div className={`start ${fade}`}>{
-        [<div>{tea[0].title}</div>, <div>내용1</div>, <div>내용2</div>][tab]
+        [<div>{findProduct.title}</div>, <div>내용1</div>, <div>내용2</div>][tab]
         }</div>
 }
 

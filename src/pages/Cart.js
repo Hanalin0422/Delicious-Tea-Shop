@@ -14,6 +14,7 @@ function Cart(){
     let cart = useSelector((state)=> {return state.cart});
     let dispatch = useDispatch();
 
+    console.log(cart);
     return(
         <Wrapper>
             <Header/>
