@@ -1,5 +1,5 @@
 import Header from './header';
-import { useParams } from 'react-router-dom';
+import { json, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import productData from '../data';
 import earlGrey from '../img/earlGrey.jpg';
@@ -39,6 +39,20 @@ function Detail(){
             setNum(e.target.value);
         }
     }
+
+    useEffect(()=>{
+        // 일단 변경을 원하는 배열을 꺼냄.
+        let takenValue = localStorage.getItem('watched');
+        // 꺼낸 배열을 string에서 객체로 바꿔줌
+        takenValue = JSON.parse(takenValue);
+        // 배열로 바꾼 값에 원하는 값을 추가
+        takenValue.push(findProduct.id);
+        // 중복 제거하는 법
+        takenValue = new Set(takenValue);
+        takenValue = Array.from(takenValue);
+        // 다시 localStorage에 저장하기
+        localStorage.setItem('watched', JSON.stringify(takenValue));
+    }, [])
 
     // setTimeout(()=>{실행할 코드}, 1000)
     useEffect(()=>{

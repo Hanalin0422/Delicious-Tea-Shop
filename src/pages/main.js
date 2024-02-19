@@ -16,6 +16,7 @@ import axios from 'axios';
 import loadingImg from '../img/loading.gif';
 import Wrapper from '../wrapper';
 import Header from './header';
+import Watched from './Watched';
 
 function Main(){
     let [tea, setTea] = useState(productData);
@@ -36,10 +37,18 @@ function Main(){
       }
     }
 
+    useEffect(()=>{
+      if(!localStorage.getItem('watched')){
+        localStorage.setItem('watched', JSON.stringify([]))
+      }
+    }, [])
+
     return (
       <Wrapper>
           <div className="Main">
             <Header />
+
+            <Watched/>
       
             <div className="inner">
               <div className="main-bg"></div>
@@ -97,13 +106,15 @@ function Main(){
       return(
         <Col>
           {/* 이미지 url 넣을 때, './img/tea'+props.i+'.jpg' 이런 식으로 넣어도 됨 */}
-          <img src={props.teaImg[i]} onClick={()=>{navigate('/detail/'+ i)}} style={{cursor:'pointer'}}/>
+          <img src={props.teaImg[i]} onClick={()=>{
+            navigate('/detail/'+ i);
+            }} style={{cursor:'pointer'}}/>
           <h4 className="main-bg-es" style={{paddingTop:'20px'}}>{props.tea[i].title}</h4>
           <p>{props.tea[i].price} 원</p>
           <p>{props.tea[i].content}</p>
         </Col>
       )
-
+      console.log()
     }
     
 }

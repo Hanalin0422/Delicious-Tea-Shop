@@ -27,10 +27,14 @@ let cart = createSlice({
         },
         plusProduct(state, action){
             state.push(action.payload);
+        },
+        minusProduct(state, action){
+            let num = state.findIndex((e) => e.id == action.payload);
+            state.splice(num, 1);
         }
     }
 })
-export let {addCount, minusCount, plusProduct} = cart.actions;
+export let {addCount, minusCount, plusProduct, minusProduct} = cart.actions;
 
 
 // state를 만들었으면 이제 이 밑에 등록해야됨.

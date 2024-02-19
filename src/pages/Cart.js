@@ -3,7 +3,7 @@ import Header from "./header";
 import Table from 'react-bootstrap/Table';
 import '../CSS/cart.css'
 import { useDispatch, useSelector } from "react-redux";
-import { addCount, minusCount } from "../store";
+import { addCount, minusCount, minusProduct } from "../store";
 
 function Cart(){
 
@@ -25,6 +25,7 @@ function Cart(){
                             <th style={{width : '100px'}}>상품 번호</th>
                             <th>상품명</th>
                             <th style={{width : '150px'}}>수량</th>
+                            <th style={{width : '150px'}}>장바구니에서 뻬기</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,6 +42,10 @@ function Cart(){
                                         <button className="addMinus" onClick={()=>{
                                             dispatch(addCount(cart[i].id));
                                         }}>+</button>
+                                    </td>
+                                    <td><button onClick={()=>{
+                                        dispatch(minusProduct(cart[i].id));
+                                    }}>삭제</button>
                                     </td>
                                 </tr>
                             )

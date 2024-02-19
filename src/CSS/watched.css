@@ -1,0 +1,25 @@
+
+.inner-watch{
+    background-color: beige;
+    height: 400px;
+    width: 200px;
+    position: fixed;
+    z-index: 9;
+    right : 0;
+}
+.count-cart,
+.show-product,
+.up{
+    border: 1px solid grey;
+    position: relative;
+}
+
+.show-product{
+    height: 345px;
+}
+.up .material-symbols-outlined{
+    position: absolute;
+    left: 70%;
+    top : 50%;
+    transform: translate(-50%, -50%);
+}

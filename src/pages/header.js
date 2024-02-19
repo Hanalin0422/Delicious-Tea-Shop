@@ -6,10 +6,19 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useState } from 'react';
 import productData from '../data';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 
 function Header(){
     let [tea, setTea] = useState(productData);
     let navigate = useNavigate();
+
+    let ret = useQuery('userName', ()=>{
+        return axios.get('https://codingapple1.github.io/userdata.json').then((a)=>{
+            return a.data
+        })
+    })
+
     return(
         <div className="Header">
             <header>
@@ -35,7 +44,11 @@ function Header(){
                         <Nav>
                         <Nav.Link onClick={()=> navigate('/cart')} className='list'>장바구니</Nav.Link>
                         <div className="material-symbols-outlined">shopping_basket</div>
-                        <Nav.Link eventKey={2} href="#memes" className='list'>마이페이지</Nav.Link>
+                        <Nav.Link eventKey={2} href="#memes" className='list'>
+                            { ret.isLoading && '로딩중'}
+                            { ret.error && '에러남'}
+                            { ret.data && ret.data.name }
+                        </Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                     </Container>
